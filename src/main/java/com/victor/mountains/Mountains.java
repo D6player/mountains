@@ -14,8 +14,8 @@ import javax.swing.JLabel;
  * @author bard
  */
 public class Mountains {
-    private static final int WIDTH = 500;
-    private static final int HEIGHT = 500;
+    private static final int WIDTH = 1000;
+    private static final int HEIGHT = 1000;
     
     private static final int LIGHT_BLUE = 6089215;
 
@@ -26,7 +26,13 @@ public class Mountains {
                 BufferedImage.TYPE_INT_RGB
         );
         
-        PerlinNoise p = new PerlinNoise(12.9898, 78.233, 43758.5453123);
+        PerlinNoise p = new PerlinNoise(
+                12.9898,
+                78.233,
+                43758.5453123,
+                3,
+                8.0
+        );
         
         int col;
         double n, x, y;
@@ -35,23 +41,24 @@ public class Mountains {
                 x = ((double) i)/((double) Mountains.WIDTH);
                 y = ((double) j)/((double) Mountains.HEIGHT);
                 
-                x *= 10.0;
-                y *= 10.0;
+                n = p.perlinNoise(x, y);
                 
-                n = p.perlinNoise(Math.floor(x), Math.floor(y));
-                
-                col = (int) (n*255.0);
-                col = col + col*256 + col*65536;
+                col = 0;
+                if ((n % 0.1) < 0.005) {
+                    col = Mountains.LIGHT_BLUE;
+                }
+                //col = (int) (n*255.0);
+                //col = col + col*256 + col*65536;
                 
                 im.setRGB(i, j, col);
             }
         }
         
-        JFrame hello = new JFrame("Hello World");
-        hello.add(new JLabel(new ImageIcon(im)));
+        JFrame frame = new JFrame("Test frame");
+        frame.add(new JLabel(new ImageIcon(im)));
         //hello.setBounds(500, 500, 500, 500);
-        hello.pack();
-        hello.setVisible(true);
-        hello.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
