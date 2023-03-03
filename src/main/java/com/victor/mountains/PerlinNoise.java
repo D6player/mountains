@@ -13,6 +13,7 @@ public class PerlinNoise {
     double y1;
     double s1;
     double init_s;
+    double ls;
     int depth;
     
     public PerlinNoise(
@@ -21,11 +22,12 @@ public class PerlinNoise {
             double s1,
             int depth,
             double init_s
-    ) {
+    ) { 
         this.x1 = x1;
         this.y1 = y1;
         this.s1 = s1;
         this.init_s = init_s;
+        this.ls = 2.0 - Math.pow(0.5, depth);
         this.depth = depth;
     }
     
@@ -52,16 +54,16 @@ public class PerlinNoise {
     }
     
     public double perlinNoise(double x, double y) {
-        double Q1x, Q1y, Q2x, Q2y, h, w, n1, n2, n3, n4, i, i1, i2, l, ls;
+        double Q1x, Q1y, Q2x, Q2y, h, w, n1, n2, n3, n4, i, i1, i2, l;
         int n;
         
         x *= this.init_s;
         y *= this.init_s;
         
         for (
-            n = 1, i = 0.0, ls = 0.0, l = 1.0;
+            n = 1, i = 0.0, l = 1.0;
             n <= this.depth;
-            n++, x *= 2.0, y *= 2.0, ls += l, l /= 2.0
+            n++, x *= 2.0, y *= 2.0, l /= 2.0
         ) {
             Q1x = Math.floor(x);
             Q1y = Math.floor(y);
@@ -82,6 +84,6 @@ public class PerlinNoise {
             i += PerlinNoise.interpolate(h, i1, i2) * l;
         }
         
-        return i/ls;
+        return i/this.ls;
     }
 }
