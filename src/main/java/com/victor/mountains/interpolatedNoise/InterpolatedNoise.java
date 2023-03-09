@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.victor.mountains;
+package com.victor.mountains.interpolatedNoise;
 
 /**
  *
  * @author bard
  */
-public class PerlinNoise {
+public class InterpolatedNoise {
     double x1;
     double y1;
     double s1;
@@ -16,7 +16,7 @@ public class PerlinNoise {
     double ls;
     int depth;
     
-    public PerlinNoise(
+    public InterpolatedNoise(
             double x1,
             double y1,
             double s1,
@@ -39,7 +39,7 @@ public class PerlinNoise {
     }
     
     private static double interpolate(double x, double min, double max) {
-        return min + (max - min) * PerlinNoise.interpolate_helper(x);
+        return min + (max - min) * InterpolatedNoise.interpolate_helper(x);
     }
     
     private double noise(double x, double y, int i) {
@@ -53,7 +53,7 @@ public class PerlinNoise {
         return n;
     }
     
-    public double perlinNoise(double x, double y) {
+    public double interpolatedNoise(double x, double y) {
         double Q1x, Q1y, Q2x, Q2y, h, w, n1, n2, n3, n4, i, i1, i2, l;
         int n;
         
@@ -78,10 +78,10 @@ public class PerlinNoise {
             n3 = this.noise(Q1x, Q2y, n);
             n4 = this.noise(Q2x, Q2y, n);
         
-            i1 = PerlinNoise.interpolate(w, n1, n2);
-            i2 = PerlinNoise.interpolate(w, n3, n4);
+            i1 = InterpolatedNoise.interpolate(w, n1, n2);
+            i2 = InterpolatedNoise.interpolate(w, n3, n4);
             
-            i += PerlinNoise.interpolate(h, i1, i2) * l;
+            i += InterpolatedNoise.interpolate(h, i1, i2) * l;
         }
         
         return i/this.ls;

@@ -4,6 +4,7 @@
 
 package com.victor.mountains;
 
+import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -18,6 +19,7 @@ public class Mountains {
     private static final int HEIGHT = 1000;
     
     private static final int LIGHT_BLUE = 6089215;
+    //private static final int DARK_BLUE = 0;
 
     public static void main(String[] args) {
         BufferedImage im = new BufferedImage(
@@ -26,7 +28,7 @@ public class Mountains {
                 BufferedImage.TYPE_INT_RGB
         );
         
-        PerlinNoise p = new PerlinNoise(
+        InterpolatedNoise p = new InterpolatedNoise(
                 12.9898,
                 78.233,
                 43758.5453123,
@@ -41,7 +43,7 @@ public class Mountains {
                 x = ((double) i)/((double) Mountains.WIDTH);
                 y = ((double) j)/((double) Mountains.HEIGHT);
                 
-                n = p.perlinNoise(x, y);
+                n = p.interpolatedNoise(x, y);
                 
                 col = 0;
                 if ((n % 0.1) < 0.005) {
