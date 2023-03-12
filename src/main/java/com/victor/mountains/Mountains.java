@@ -5,6 +5,7 @@
 package com.victor.mountains;
 
 import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
+import com.victor.mountains.renderer.Renderer;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -28,7 +29,7 @@ public class Mountains {
                 BufferedImage.TYPE_INT_RGB
         );
         
-        InterpolatedNoise p = new InterpolatedNoise(
+        InterpolatedNoise noise = new InterpolatedNoise(
                 12.9898,
                 78.233,
                 43758.5453123,
@@ -36,7 +37,7 @@ public class Mountains {
                 8.0
         );
         
-        int col;
+        /*int col;
         double n, x, y;
         for (int i = 0; i<Mountains.WIDTH; i++) {
             for (int j = 0; j < Mountains.HEIGHT; j++) {
@@ -53,6 +54,15 @@ public class Mountains {
                 //col = col + col*256 + col*65536;
                 
                 im.setRGB(i, j, col);
+            }
+        }*/
+        
+        Renderer renderer = new Renderer(noise, Mountains.WIDTH, Mountains.HEIGHT);
+        renderer.renderToBuffer(69.0);
+        
+        for (int i = 0; i < Mountains.WIDTH; i++) {
+            for (int j = 0; j < Mountains.HEIGHT; j++) {
+                im.setRGB(i, j, renderer.buffer[j][i]);
             }
         }
         

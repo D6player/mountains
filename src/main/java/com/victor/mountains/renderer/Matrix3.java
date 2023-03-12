@@ -48,7 +48,7 @@ public class Matrix3 {
         );
     }
     
-    public Vector3 mulv(Vector3 rhs) {
+    public Vector3 mul(Vector3 rhs) {
         return new Vector3(
                 this.f1.mul(rhs),
                 this.f2.mul(rhs),

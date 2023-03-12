@@ -19,7 +19,7 @@ public class Vector3 {
         this.z = z;
     }
     
-    public void mule(double a) {
+    public void mul(double a) {
         this.x *= a;
         this.y *= a;
         this.z *= a;
@@ -39,7 +39,7 @@ public class Vector3 {
     }
     
     public void sub(Vector3 rhs) {
-        rhs.mule(-1);
+        rhs.mul(-1);
         this.sum(rhs);
     }
 }
