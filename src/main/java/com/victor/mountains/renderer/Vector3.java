@@ -19,10 +19,12 @@ public class Vector3 {
         this.z = z;
     }
     
-    public void mul(double a) {
-        this.x *= a;
-        this.y *= a;
-        this.z *= a;
+    public Vector3 mul(double a) {
+        return new Vector3(
+            this.x *= a,
+            this.y *= a,
+            this.z *= a
+        );
     }
     
     public double mul(Vector3 rhs) {

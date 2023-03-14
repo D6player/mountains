@@ -23,6 +23,12 @@ public class Matrix3 {
         this.f3 = new Vector3(g, h, i);
     }
     
+    public Matrix3(Vector3 f1, Vector3 f2, Vector3 f3) {
+        this.f1 = f1;
+        this.f2 = f2;
+        this.f3 = f3;
+    }
+    
     public void transpose() {
         double aux;
         
@@ -43,7 +49,7 @@ public class Matrix3 {
         rhs.transpose();
         return new Matrix3(
             this.f1.mul(rhs.f1), this.f1.mul(rhs.f2), this.f1.mul(rhs.f3),
-            this.f2.mul(rhs.f1), this.f2.mul(rhs.f2), this.f3.mul(rhs.f3),
+            this.f2.mul(rhs.f1), this.f2.mul(rhs.f2), this.f2.mul(rhs.f3),
             this.f3.mul(rhs.f1), this.f3.mul(rhs.f2), this.f3.mul(rhs.f3)
         );
     }
@@ -53,6 +59,14 @@ public class Matrix3 {
                 this.f1.mul(rhs),
                 this.f2.mul(rhs),
                 this.f3.mul(rhs)
+        );
+    }
+    
+    public Matrix3 mul(double rhs) {
+        return new Matrix3(
+            this.f1.mul(rhs),
+            this.f2.mul(rhs),
+            this.f3.mul(rhs)
         );
     }
 }

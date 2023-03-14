@@ -7,6 +7,9 @@ package com.victor.mountains;
 import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
 import com.victor.mountains.renderer.Renderer;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,11 +21,8 @@ import javax.swing.JLabel;
 public class Mountains {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 1000;
-    
-    private static final int LIGHT_BLUE = 6089215;
-    //private static final int DARK_BLUE = 0;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         BufferedImage im = new BufferedImage(
                 Mountains.WIDTH,
                 Mountains.HEIGHT,
@@ -34,37 +34,20 @@ public class Mountains {
                 78.233,
                 43758.5453123,
                 3,
-                8.0
+                2.5
         );
         
-        /*int col;
-        double n, x, y;
-        for (int i = 0; i<Mountains.WIDTH; i++) {
-            for (int j = 0; j < Mountains.HEIGHT; j++) {
-                x = ((double) i)/((double) Mountains.WIDTH);
-                y = ((double) j)/((double) Mountains.HEIGHT);
-                
-                n = p.interpolatedNoise(x, y);
-                
-                col = 0;
-                if ((n % 0.1) < 0.005) {
-                    col = Mountains.LIGHT_BLUE;
-                }
-                //col = (int) (n*255.0);
-                //col = col + col*256 + col*65536;
-                
-                im.setRGB(i, j, col);
-            }
-        }*/
-        
         Renderer renderer = new Renderer(noise, Mountains.WIDTH, Mountains.HEIGHT);
-        renderer.renderToBuffer(69.0);
+        renderer.renderToBuffer(Math.PI/3.5, 0.4);
         
         for (int i = 0; i < Mountains.WIDTH; i++) {
             for (int j = 0; j < Mountains.HEIGHT; j++) {
                 im.setRGB(i, j, renderer.buffer[j][i]);
             }
         }
+        
+        File outputfile = new File("test.png");
+        ImageIO.write(im, "png", outputfile);
         
         JFrame frame = new JFrame("Test frame");
         frame.add(new JLabel(new ImageIcon(im)));
