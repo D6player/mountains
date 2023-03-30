@@ -9,9 +9,7 @@ import com.victor.mountains.renderer.Renderer;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,7 +38,7 @@ public class Mountains {
         );
         
         Renderer renderer = new Renderer(
-                noise,
+                noise::interpolatedNoise,
                 Mountains.WIDTH,
                 Mountains.HEIGHT,
                 Math.PI/4

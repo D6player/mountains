@@ -4,7 +4,6 @@
  */
 package com.victor.mountains.renderer;
 
-import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -15,9 +14,9 @@ import static java.lang.Math.sin;
 public class Renderer {
     private static final int LIGHT_BLUE = 6089215;
     private static final int DARK_BLUE = 461352;
-    private static final double SEPARATION = 0.050;
+    private static final double SEPARATION = 0.05;
     private static final double LINE_WIDTH = 0.0050;
-    private static final double GROUND = 0.30;
+    private static final double GROUND = 0.0;
     private static final double ATENUATION = 3;
     
     private static final double GRID_WIDTH = 0.0010;
@@ -31,7 +30,7 @@ public class Renderer {
     private final int width;
     private final int height;
     
-    public Renderer(InterpolatedNoise noise, int width, int height, double angle) {
+    public Renderer(ScalarField noise, int width, int height, double angle) {
         this.points = new Vector3[height*2][width*2];
         this.colors = new int[height*2][width*2];
         this.width = width;
@@ -43,28 +42,30 @@ public class Renderer {
             for(int j = 0; j < height*2; j++) {
                 x = ((double) i)/((double) width*2) - 0.5;
                 y = ((double) j)/((double) height*2) - 0.5;
-                z = noise.interpolatedNoise(x, y);
+                z = noise.getHeight(x, y);
                 if (z >= Renderer.GROUND) {
                     this.points[j][i] = new Vector3(
                             x,
                             y,
                             (z - (1 - Renderer.GROUND)/2)/Renderer.ATENUATION
                     );
-                    this.colors[j][i] = 
+                    /*this.colors[j][i] = 
                         ((z % Renderer.SEPARATION) < Renderer.LINE_WIDTH) ?
                         Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;   
+                        Renderer.DARK_BLUE;*/
+                    this.colors[j][i] = (int) (Math.pow(2, 16)*((int) (z*255)) + 255 - ((int) (z*255)));
                 } else {
                     this.points[j][i] = new Vector3(
                             x,
                             y,
                             (Renderer.GROUND - (1 - Renderer.GROUND)/2)/Renderer.ATENUATION
                     );
-                    this.colors[j][i] = 
+                    /*this.colors[j][i] = 
                         (((x+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH) ||
                         (((y+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH)?
                         Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;
+                        Renderer.DARK_BLUE;*/
+                    this.colors[j][i] = 255;
                 }
             }
         }
