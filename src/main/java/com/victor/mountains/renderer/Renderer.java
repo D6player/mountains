@@ -6,6 +6,7 @@ package com.victor.mountains.renderer;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,74 +17,76 @@ public class Renderer {
     private static final int DARK_BLUE = 461352;
     private static final double SEPARATION = 0.05;
     private static final double LINE_WIDTH = 0.0050;
-    private static final double GROUND = 0.0;
+    private static final double GROUND = 0.35;
     private static final double ATENUATION = 3;
     
     private static final double GRID_WIDTH = 0.0010;
     private static final double GRID_SEPARATION = 0.035;
     
-    private final Vector3[][] points;
-    private final int[][] colors;
-    public int[][] buffer;
+    private final ArrayList<Point> points;
     public double[][] zbuffer;
     public double angle;
     private final int width;
     private final int height;
     
     public Renderer(ScalarField noise, int width, int height, double angle) {
-        this.points = new Vector3[height*2][width*2];
-        this.colors = new int[height*2][width*2];
+        this.points = new ArrayList<>();
         this.width = width;
         this.height = height;
         this.angle = angle;
         
         double x, y, z;
+        Vector3 pos;
+        int col;
         for (int i = 0; i < width*2; i++) {
             for(int j = 0; j < height*2; j++) {
                 x = ((double) i)/((double) width*2) - 0.5;
                 y = ((double) j)/((double) height*2) - 0.5;
                 z = noise.getHeight(x, y);
-                if (z >= Renderer.GROUND) {
-                    this.points[j][i] = new Vector3(
+                if (z >= GROUND) {
+                    pos = new Vector3(
                             x,
                             y,
-                            (z - (1 - Renderer.GROUND)/2)/Renderer.ATENUATION
+                            z/ATENUATION
                     );
-                    /*this.colors[j][i] = 
+                    col = 
                         ((z % Renderer.SEPARATION) < Renderer.LINE_WIDTH) ?
                         Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;*/
-                    this.colors[j][i] = (int) (Math.pow(2, 16)*((int) (z*255)) + 255 - ((int) (z*255)));
+                        Renderer.DARK_BLUE;
+                    //col = (int) (Math.pow(2, 16)*((int) (z*255)) + 255 - ((int) (z*255)));
                 } else {
-                    this.points[j][i] = new Vector3(
+                    pos = new Vector3(
                             x,
                             y,
-                            (Renderer.GROUND - (1 - Renderer.GROUND)/2)/Renderer.ATENUATION
+                            GROUND/ATENUATION
                     );
-                    /*this.colors[j][i] = 
+                    col = 
                         (((x+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH) ||
                         (((y+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH)?
                         Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;*/
-                    this.colors[j][i] = 255;
+                        Renderer.DARK_BLUE;
+                    //col = 255;
                 }
+                
+                this.points.add(new Point(pos, col));
             }
         }
     }
     
-    public void renderToBuffer() {
+    /**
+     *
+     * @param callback
+     */
+    public void renderToBuffer(Callback callback) {
         Vector3 v;
         
-        this.zbuffer = new double[this.height][this.width];
-        this.buffer = new int[this.height][this.width];
+        this.zbuffer = new double[height][width];
         
         Matrix3 q = this.transformMatrix();
         
-        for (int i = 0; i < this.width*2; i++) {
-            for (int j = 0; j < this.height*2; j++) {
-                v = q.mul(this.points[j][i]);
-                this.drawToBuffer(v, this.colors[j][i]);
-            }
+        for (Point p : points) {
+            v = q.mul(p.pos);
+            this.drawToBuffer(v, p.col, callback);
         }
     }
     
@@ -91,27 +94,22 @@ public class Renderer {
         this.angle += a;
     }
     
-    private void drawToBuffer(Vector3 v, int col) {
+    private void drawToBuffer(Vector3 v, int col, Callback callback) {
         int x, y;
         
-        x = (int) ((v.x + 0.5) * (double) this.width);
-        y = (int) ((v.y + 0.5) * (double) this.height);
+        x = (int) ((v.x + 0.5) * (double) width);
+        y = (int) ((v.y + 0.5) * (double) height);
 
-        v.z += 10;
-
-        if (0 <= x && x < this.width && 0 <= y && y < this.height) {
-            if (v.z >= this.zbuffer[y][x]) {
-                this.zbuffer[y][x] = v.z;
-                this.buffer[y][x] = col;
-            }
+        if (this.isVisible(x, y, v.z)) {
+            callback.callback(x, y, col);
         }
     }
     
     private Matrix3 transformMatrix() {
         double c, s;
         
-        c = cos(this.angle);
-        s = sin(this.angle);
+        c = cos(angle);
+        s = sin(angle);
         
         Matrix3 m = new Matrix3(
                 c, -s, 0,
@@ -127,5 +125,21 @@ public class Renderer {
         
         //  P -> M -> N
         return n.mul(m);
+    }
+    
+    private boolean isVisible(int x, int y, double z) {
+        z += 10; // precaution value
+        
+        if (
+                0 <= x && x < this.width &&
+                0 <= y && y < this.height
+            ) {
+            
+            if(z >= this.zbuffer[y][x]) {
+                this.zbuffer[y][x] = z;
+                return true;
+            }
+        }
+        return false;
     }
 }

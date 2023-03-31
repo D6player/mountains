@@ -6,8 +6,6 @@ package com.victor.mountains;
 
 import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
 import com.victor.mountains.renderer.Renderer;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -44,46 +42,19 @@ public class Mountains {
                 Math.PI/4
         );
         
-        renderer.renderToBuffer();
-        for (int i = 0; i < Mountains.WIDTH; i++) {
-                for (int j = 0; j < Mountains.HEIGHT; j++) {
-                    im.setRGB(i, j, renderer.buffer[j][i]);
-                }
-        }
-        
-        //File outputfile = new File("test.png");
-        //ImageIO.write(im, "png", outputfile);
+        renderer.renderToBuffer(im::setRGB);
         
         JLabel label = new JLabel(new ImageIcon(im));
         JFrame frame = new JFrame("Test frame");
         frame.add(label);
-        //hello.setBounds(500, 500, 500, 500);
         frame.pack();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_UP) {
-                    renderer.increseAngle(0.1);
-                    renderer.renderToBuffer();
-                    for (int i = 0; i < Mountains.WIDTH; i++) {
-                        for (int j = 0; j < Mountains.HEIGHT; j++) {
-                            im.setRGB(i, j, renderer.buffer[j][i]);
-                        }
-                    }
-                    label.repaint();
-                }
-            }
-
-            @Override
-            public void keyTyped(KeyEvent ke) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent ke) {
-            }
-        });
+        frame.addKeyListener(new CameraControl(
+                renderer,
+                label,
+                im::setRGB
+        ));
         
     }
 }
