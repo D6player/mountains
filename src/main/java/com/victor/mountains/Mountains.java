@@ -7,7 +7,6 @@ package com.victor.mountains;
 import com.victor.mountains.interpolatedNoise.InterpolatedNoise;
 import com.victor.mountains.renderer.Renderer;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,7 +19,7 @@ public class Mountains {
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 1000;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         BufferedImage im = new BufferedImage(
                 Mountains.WIDTH,
                 Mountains.HEIGHT,
@@ -57,4 +56,5 @@ public class Mountains {
         ));
         
     }
+    
 }

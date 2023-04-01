@@ -8,6 +8,7 @@ import com.victor.mountains.renderer.Callback;
 import com.victor.mountains.renderer.Renderer;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.function.Supplier;
 import javax.swing.JLabel;
 
 /**

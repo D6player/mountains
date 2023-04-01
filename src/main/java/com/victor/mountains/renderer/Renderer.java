@@ -5,6 +5,7 @@
 package com.victor.mountains.renderer;
 
 import static java.lang.Math.cos;
+import static java.lang.Math.max;
 import static java.lang.Math.sin;
 import java.util.ArrayList;
 
@@ -36,47 +37,19 @@ public class Renderer {
         this.angle = angle;
         
         double x, y, z;
-        Vector3 pos;
-        int col;
-        for (int i = 0; i < width*2; i++) {
-            for(int j = 0; j < height*2; j++) {
-                x = ((double) i)/((double) width*2) - 0.5;
-                y = ((double) j)/((double) height*2) - 0.5;
+        for (x = -0.5; x < 0.5; x += 0.5/width) {
+            for (y = -0.5; y < 0.5; y += 0.5/width) {
                 z = noise.getHeight(x, y);
-                if (z >= GROUND) {
-                    pos = new Vector3(
-                            x,
-                            y,
-                            z/ATENUATION
-                    );
-                    col = 
-                        ((z % Renderer.SEPARATION) < Renderer.LINE_WIDTH) ?
-                        Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;
-                    //col = (int) (Math.pow(2, 16)*((int) (z*255)) + 255 - ((int) (z*255)));
-                } else {
-                    pos = new Vector3(
-                            x,
-                            y,
-                            GROUND/ATENUATION
-                    );
-                    col = 
-                        (((x+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH) ||
-                        (((y+0.5) % Renderer.GRID_SEPARATION) < Renderer.GRID_WIDTH)?
-                        Renderer.LIGHT_BLUE :
-                        Renderer.DARK_BLUE;
-                    //col = 255;
-                }
-                
-                this.points.add(new Point(pos, col));
+                this.points.add(new Point(
+                        new Vector3(x, y, max(z, GROUND)/ATENUATION),
+                        (z >= GROUND) ?
+                                this.curveShader(z) : this.gridShader(x, y)
+                ));
             }
         }
+        
     }
     
-    /**
-     *
-     * @param callback
-     */
     public void renderToBuffer(Callback callback) {
         Vector3 v;
         
@@ -123,7 +96,6 @@ public class Renderer {
                 0, 0.7818, 0.6234
         );
         
-        //  P -> M -> N
         return n.mul(m);
     }
     
@@ -141,5 +113,18 @@ public class Renderer {
             }
         }
         return false;
+    }
+    
+    private int gridShader(double x, double y) {
+        return  (((x+0.5) % GRID_SEPARATION) < GRID_WIDTH) ||
+                (((y+0.5) % GRID_SEPARATION) < GRID_WIDTH) ?
+                    LIGHT_BLUE :
+                    DARK_BLUE;
+    }
+    
+    private int curveShader(double z) {
+        return  ((z % SEPARATION) < LINE_WIDTH) ?
+                    LIGHT_BLUE :
+                    DARK_BLUE;
     }
 }
