@@ -4,11 +4,11 @@
  */
 package com.victor.mountains;
 
-import com.victor.mountains.renderer.Callback;
 import com.victor.mountains.renderer.Renderer;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.function.Supplier;
+import java.awt.image.BufferedImage;
+import java.util.function.Consumer;
 import javax.swing.JLabel;
 
 /**
@@ -18,12 +18,19 @@ import javax.swing.JLabel;
 public class CameraControl implements KeyListener {
     Renderer renderer;
     JLabel label;
-    Callback callback;
+    BufferedImage im;
+    Consumer<BufferedImage> cleaner;
     
-    public CameraControl(Renderer renderer, JLabel label, Callback callback) {
+    public CameraControl(
+            Renderer renderer,
+            JLabel label,
+            BufferedImage im,
+            Consumer<BufferedImage> cleaner
+    ) {
         this.renderer = renderer;
         this.label = label;
-        this.callback = callback;
+        this.im = im;
+        this.cleaner = cleaner;
     }
     
     @Override
@@ -33,9 +40,9 @@ public class CameraControl implements KeyListener {
     @Override
     public void keyPressed(KeyEvent ke) {
         if(ke.getKeyCode() == KeyEvent.VK_UP) {
-            // we need to clear the image
+            this.cleaner.accept(im);
             renderer.increseAngle(0.1);
-            renderer.renderToBuffer(callback);
+            renderer.renderToBuffer(im::setRGB);
             label.repaint();
         }
     }

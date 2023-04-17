@@ -4,11 +4,13 @@
  */
 package com.victor.mountains.interpolatedNoise;
 
+import com.victor.mountains.renderer.ScalarField;
+
 /**
  *
  * @author bard
  */
-public class InterpolatedNoise {
+public class InterpolatedNoise implements ScalarField {
     double x1;
     double y1;
     double s1;
@@ -53,7 +55,8 @@ public class InterpolatedNoise {
         return n;
     }
     
-    public double interpolatedNoise(double x, double y) {
+    @Override
+    public double getHeight(double x, double y) {
         double Q1x, Q1y, Q2x, Q2y, h, w, n1, n2, n3, n4, i, i1, i2, l;
         int n;
         
@@ -86,4 +89,5 @@ public class InterpolatedNoise {
         
         return i/this.ls;
     }
+    
 }

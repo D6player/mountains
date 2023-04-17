@@ -35,7 +35,7 @@ public class Mountains {
         );
         
         Renderer renderer = new Renderer(
-                noise::interpolatedNoise,
+                noise,
                 Mountains.WIDTH,
                 Mountains.HEIGHT,
                 Math.PI/4
@@ -44,7 +44,7 @@ public class Mountains {
         renderer.renderToBuffer(im::setRGB);
         
         JLabel label = new JLabel(new ImageIcon(im));
-        JFrame frame = new JFrame("Test frame");
+        JFrame frame = new JFrame("Mountains");
         frame.add(label);
         frame.pack();
         frame.setVisible(true);
@@ -52,9 +52,15 @@ public class Mountains {
         frame.addKeyListener(new CameraControl(
                 renderer,
                 label,
-                im::setRGB
+                im,
+                Mountains::cleanImage
         ));
-        
+    }
+    
+    public static void cleanImage(BufferedImage im) {
+        for (int i = 0; i < WIDTH; i++)
+            for (int j = 0; j < WIDTH; j++)
+                im.setRGB(i, j, 0);
     }
     
 }

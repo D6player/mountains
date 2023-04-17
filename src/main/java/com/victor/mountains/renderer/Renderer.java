@@ -14,15 +14,16 @@ import java.util.ArrayList;
  * @author bard
  */
 public class Renderer {
+    /*               BEGIN PARAMETERS              */
     private static final int LIGHT_BLUE = 6089215;
     private static final int DARK_BLUE = 461352;
     private static final double SEPARATION = 0.05;
     private static final double LINE_WIDTH = 0.0050;
     private static final double GROUND = 0.35;
     private static final double ATENUATION = 3;
-    
     private static final double GRID_WIDTH = 0.0010;
     private static final double GRID_SEPARATION = 0.035;
+    /*               END PARAMETERS              */
     
     private final ArrayList<Point> points;
     public double[][] zbuffer;
@@ -126,5 +127,19 @@ public class Renderer {
         return  ((z % SEPARATION) < LINE_WIDTH) ?
                     LIGHT_BLUE :
                     DARK_BLUE;
+    }
+    
+    private class Point {
+        public Vector3 pos;
+        public int col;
+
+        public Point(Vector3 pos, int col) {
+            this.pos = pos;
+            this.col = col;
+        }
+    }
+    
+    public interface Callback {
+        void callback(int x, int y, int col);
     }
 }
