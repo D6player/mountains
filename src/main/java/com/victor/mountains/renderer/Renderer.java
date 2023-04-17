@@ -39,11 +39,15 @@ public class Renderer {
         
         double x, y, z;
         for (x = -0.5; x < 0.5; x += 0.5/width) {
-            for (y = -0.5; y < 0.5; y += 0.5/width) {
-                z = noise.getHeight(x, y);
+            for (y = -0.5; y < 0.5; y += 0.5/height) {
+                try {
+                    z = noise.getHeight(x, y);
+                } catch (ScalarField.UndefinedScalarException e) {
+                    z = GROUND;
+                }
                 this.points.add(new Point(
                         new Vector3(x, y, max(z, GROUND)/ATENUATION),
-                        (z >= GROUND) ?
+                        (z > GROUND) ?
                                 this.curveShader(z) : this.gridShader(x, y)
                 ));
             }

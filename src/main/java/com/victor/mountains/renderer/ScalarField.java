@@ -9,5 +9,11 @@ package com.victor.mountains.renderer;
  * @author bard
  */
 public interface ScalarField {
-    public double getHeight(double x, double y);
+    public double getHeight(double x, double y) throws UndefinedScalarException;
+    
+    public class UndefinedScalarException extends Exception {
+        public UndefinedScalarException() {
+            super("Value not defined in scalar field");
+        }
+    }
 }
